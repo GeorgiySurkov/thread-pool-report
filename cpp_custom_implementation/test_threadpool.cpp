@@ -82,3 +82,16 @@ TEST(ThreadPool, BusyReturnsTrueWhenAllThreadsAreWorking) {
     ASSERT_TRUE(tp.is_busy());
     tp.shutdown();
 }
+
+TEST(ThreadPool, TasksAreExecutedInParallel) {
+    mytp::ThreadPool tp(8);
+    tp.start();
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    const int task_time = 30;
+    for (int i = 0; i < 8; ++i) {
+        tp.submit([task_time] { std::this_thread::sleep_for(std::chrono::milliseconds(task_time)); });
+    }
+    tp.shutdown();
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    ASSERT_LT(std::abs(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() - task_time), 10);
+}
