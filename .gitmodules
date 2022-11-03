@@ -1,0 +1,3 @@
+[submodule "cpp_custom_implementation/biginteger"]
+	path = cpp_custom_implementation/biginteger
+	url = https://github.com/GeorgiySurkov/big-integer
